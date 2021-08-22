@@ -1,0 +1,24 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    height: 400px;
+    width: 600px;
+    background: #E6E6E6;
+    position: relative;
+}
+
+.ship {
+    position: absolute;
+    bottom: 0;
+}
+
+.bullet {
+/*    width: 5px;
+    height: 10px;*/
+    background: red;
+    display: inline-flex;
+    position: fixed;
+}
