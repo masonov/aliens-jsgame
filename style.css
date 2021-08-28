@@ -4,10 +4,24 @@ body {
 }
 
 .container {
-    height: 400px;
-    width: 600px;
+    height: 720px;
+    width: 1080px;
     background: #E6E6E6;
     position: relative;
+    background-image: url('images/bg.jpg');
+    background-size: cover;
+
+    -webkit-user-select: none;
+    /* user-select -- это нестандартное свойство */
+
+    -moz-user-select: none;
+    /* поэтому нужны префиксы */
+
+    -ms-user-select: none;
+}
+
+.alien {
+    width: 60px;
 }
 
 .ship {
@@ -21,4 +35,9 @@ body {
     background: red;
     display: inline-flex;
     position: fixed;
+}
+
+.main {
+    width: 1080px;
+    margin:  0 auto;
 }
