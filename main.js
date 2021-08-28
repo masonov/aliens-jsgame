@@ -1,156 +1,157 @@
-let ship = document.querySelector('.ship img');
-let shipCon = document.querySelector('.ship');
 let container = document.querySelector('.container');
-let body = document.querySelector('body');
-let shotSound = new Audio('audio/shot.mp3');
-let bangSound = new Audio('audio/bang.mp3');
+let shipCon = document.querySelector('.container .ship');
+let containerStyle = getComputedStyle(container)
 
-let alien = document.querySelector('.alien')
-
-let containerStyle = getComputedStyle(container);
-let shipStyle = getComputedStyle(ship);
-
-
-let imgAnimate = new Image();
-imgAnimate.src = "images/bang-animation.gif";
-imgAnimate.style.width = '100px';
-
-
-
-
-document.onclick = function() {
-	shot();
+class Bullet {
+	constructor(x, y) {
+		this.elem = document.createElement('span');
+		this.elem.style.width = '5px';
+		this.elem.style.height = '10px';
+		this.elem.classList.add('bullet');
+		this.elem.style.left = x + 'px';
+		this.elem.style.top = y + 'px';
+	}
 }
 
-let num = 0;
+class Ship {
+	constructor(selector) {
+		this.elem = document.querySelector(selector)
+		this.margin = 0;
+	}
 
-document.onkeydown = function() {
+	getRect() {
+		return this.elem.getBoundingClientRect();
+	}
 
-	if (event.code == "ArrowRight") {
-		if ( toNum(shipStyle.marginLeft) != toNum(containerStyle.width) - toNum(shipStyle.width) ) {
-			num += 10;
-			ship.style.marginLeft  = num + "px";
+	getStyle() {
+		return this.elem.getComputedStyle = getComputedStyle(this.elem)
+	}
+
+	moveRight() {
+		if ( toNum(this.getStyle().marginLeft) != toNum(containerStyle.width) - toNum(this.getStyle().width) ) {
+			this.margin = this.margin + 5;
+			this.elem.style.marginLeft  = this.margin + "px";
+			return this.margin;
 		}
 	}
 
-	if (event.code == "ArrowLeft") {
-		if ( toNum(shipStyle.marginLeft) != 0 ) {
-			num -= 10;
-			ship.style.marginLeft  = num + "px"			
+	moveLeft() {
+		if ( toNum(this.getStyle().marginLeft) != 0 ) {
+			this.margin = this.margin - 5;
+			this.elem.style.marginLeft  = this.margin + "px";
+			return this.margin;
 		}
 	}
 
-	if (event.code == "Space") {
-		shot();
+}
+
+class Shot {
+	constructor(bullet, ship) {
+		this.bullet = bullet;
 	}
 
-}
+	getShot() {
+		let that = this;
+		shipCon.append(that.bullet.elem)
 
-function createAlien() {
-	let alienClone = alien.cloneNode();
-	alienClone.style.display = 'block';
-	container.prepend(alienClone)
+		let timerId = setTimeout(function tick() {
+			console.dir(that.bullet)
+			that.bullet.elem.style.top = toNum(that.bullet.elem.style.top) - 5 + 'px';
+			console.dir(that.bullet.elem.style.top)
 
-	
-	alienClone.style.position = 'fixed';
-	alienClone.style.left = randomInteger(container.getBoundingClientRect().x, container.getBoundingClientRect().x + 540) + 'px';
-	return alienClone
-}
+			if ( toNum(that.bullet.elem.style.top) < 5  ) {
+				that.bullet.elem.remove();
+				 clearTimeout(timerId);
+			} else {
+				timerId = setTimeout(tick, 2); // (*)				
+			}
 
-let gameAlien = createAlien()
+			// if (macroCollision(bullet.elem.getBoundingClientRect(), gameAlien.getBoundingClientRect())) {
+			// 	debug()
+			// 	bullet.elem.remove();
+			// 	gameAlien.remove();
 
-function randomInteger(min, max) {
-  // получить случайное число от (min-0.5) до (max+0.5)
-  let rand = min - 0.5 + Math.random() * (max - min + 1);
-  return Math.round(rand);
-}
+			// 	imgAnimate.style.position = 'fixed';
+			// 	imgAnimate.style.left = gameAlien.style.left;
+			// 	imgAnimate.style.top = gameAlien.style.top;
 
+			// 	let timerBang = setTimeout(function() {
+			// 		imgAnimate.remove();
+			// 	}, 800)
 
-let alienTimerId = setTimeout(function atick() {
-	gameAlien.style.top = toNum(gameAlien.style.top) + 1 + 'px';
+			// 	container.append(imgAnimate)
 
-	if ( toNum(gameAlien.style.top) > 600  ) {
-		gameAlien.remove();
-		gameAlien = createAlien();
-		clearTimeout(alienTimerId);
-	} else {
-		alienTimerId = setTimeout(atick, 10); // (*)				
+			// 	console.dir(gameAlien.style.left)
+
+			// 	bangSound.play();
+			// 	bangSound.currentTime = 0;
+
+			// 	gameAlien = createAlien();
+			// }
+
+					
+			
+		}, 2);
 	}
-}, 2);
+
+	// let timerId = setTimeout(function tick() {
+	// 	console.dir(bullet)
+	// 	bullet.elem.style.top = toNum(bullet.elem.style.top) - 5 + 'px';
+
+	// 	if (macroCollision(bullet.elem.getBoundingClientRect(), gameAlien.getBoundingClientRect())) {
+	// 		debug()
+	// 		bullet.elem.remove();
+	// 		gameAlien.remove();
+
+	// 		imgAnimate.style.position = 'fixed';
+	// 		imgAnimate.style.left = gameAlien.style.left;
+	// 		imgAnimate.style.top = gameAlien.style.top;
+
+	// 		let timerBang = setTimeout(function() {
+	// 			imgAnimate.remove();
+	// 		}, 800)
+
+	// 		container.append(imgAnimate)
+
+	// 		console.dir(gameAlien.style.left)
+
+	// 		bangSound.play();
+	// 		bangSound.currentTime = 0;
+
+	// 		gameAlien = createAlien();
+	// 	}
+
+	// 	if ( toNum(bullet.elem.style.top) < 5 || macroCollision(bullet.elem.getBoundingClientRect(), gameAlien.getBoundingClientRect()) ) {
+	// 		bullet.elem.remove();
+	// 		 clearTimeout(timerId);
+	// 	} else {
+	// 		timerId = setTimeout(tick, 2); // (*)				
+	// 	}
+	// }, 2);
+}
 
 
 
-function shot() {
-	let shipLocate = ship.getBoundingClientRect();
-	if (!gameAlien) {
-		let gameAlien = createAlien()
+let ship = new Ship('.ship img')
+
+document.addEventListener('keydown', function() {
+
+	if (event.code == 'ArrowRight') {
+		ship.moveRight();
 	}
 
-	let span =  document.createElement('span');
-	span.style.width = '5px';
-	span.style.height = '10px';
-	span.classList.add('bullet');
-	shipCon.append(span)
-	let spanRect = span.getBoundingClientRect();
-	span.style.left = shipLocate.left + shipLocate.width / 2 - spanRect.width / 2 + 'px';
+	if (event.code == 'ArrowLeft') {
+		ship.moveLeft();
+	}
 
-	span.style.top = shipLocate.top - spanRect.height + 'px';
+	if (event.code == 'Space') {
+		shot = new Shot(new Bullet(ship.getRect().x - ship.getStyle().width / 4, ship.getRect().y));
+		shot.getShot();
+		console.dir(shot.bullet.elem.style.top)
+	}
 
-	shotSound.play();
-	
-	shotSound.currentTime = 0;
-
-	let timerId = setTimeout(function tick() {
-		span.style.top = toNum(span.style.top) - 5 + 'px';
-
-		if (macroCollision(span.getBoundingClientRect(), gameAlien.getBoundingClientRect())) {
-			span.remove();
-			gameAlien.remove();
-
-			imgAnimate.style.position = 'fixed';
-			imgAnimate.style.left = gameAlien.style.left;
-			imgAnimate.style.top = gameAlien.style.top;
-
-			let timerBang = setTimeout(function() {
-				imgAnimate.remove();
-			}, 800)
-
-			container.append(imgAnimate)
-
-			console.dir(gameAlien.style.left)
-
-			bangSound.play();
-			bangSound.currentTime = 0;
-
-			gameAlien = createAlien();
-		}
-
-		if ( toNum(span.style.top) < 5 || macroCollision(span.getBoundingClientRect(), gameAlien.getBoundingClientRect()) ) {
-			span.remove();
-			 clearTimeout(timerId);
-		} else {
-			timerId = setTimeout(tick, 2); // (*)				
-		}
-	}, 2);
-}
+})
 
 function toNum(num) {
 	return +num.replace(/[^0-9]/g, '')
-}
-
-function macroCollision(obj1, obj2){
-  var XColl = false;
-  var YColl = false;
-
-  if ((obj1.x + obj1.width >= obj2.x) && (obj1.x <= obj2.x + obj2.width)) {
-  	XColl = true;
-  }
-  if ((obj1.y + obj1.height >= obj2.y) && (obj1.y <= obj2.y + obj2.height)) {
-  	YColl = true;
-  }
-
-  if (XColl && YColl) {
-  	return true;
-  }
-  return false;
 }
