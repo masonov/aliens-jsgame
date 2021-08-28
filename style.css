@@ -3,6 +3,14 @@ body {
     margin: 0;
 }
 
+.result {
+    color: rgba(255, 255, 255, 0.7);
+    position: fixed;
+    top: 10px;
+    left: 37px;
+    font-size: 25px;
+}
+
 .container {
     height: 720px;
     width: 1080px;
